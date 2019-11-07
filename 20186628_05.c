@@ -7,7 +7,9 @@
 #include <stdlib.h>
 //#include <string.h>
 
-int sumNumbers(int count_input, FILE *write, int *numbers);
+//int sumNumbers(int count_input, FILE *write, int *numbers);
+//int sumNumbers(int count_input, int numbers[]);
+int sumNumbers(int array[], int count_input);
 
 //argv[1] input text file
 int main(int argc, char* argv[]) {
@@ -47,33 +49,57 @@ int main(int argc, char* argv[]) {
 			str[i] = NULL;
 		}
 
+	}	
+
+	int reversed[100];
+
+	for (int i = 0; i < count; i++) {
+		reversed[i] = numbers[count - i - 1];
 	}
 
-
 	//summation
-	int summation = sumNumbers(count, write, numbers);
 
+	//int summation = sumNumbers(numbers, 1);
+
+	for (int i = 1; i <= count; i++) {
+		int result = sumarray(reversed, i);
+		//int result = sumNumbers(numbers, i);
+		printf("result is %d\n", result); //
+		fprintf(write, "[%03d] %d\n", count - i + 1, result);
+	}
+
+	
+
+	//print name and student id
 	printf("summation of numbers with recursive function call\n");
 	printf("20186628 임선호\n");
-	fprintf(write, "This program is written by 임선호 at 2019 11 02\n");
+	fprintf(write, "This program is summation of 12 numbers and written by 임선호 at 2019 11 02 ~ 2019 11 07\n");
 	fprintf(write, "Student Id Number is 20186628\n");
 
+	//close
 	fclose(read);
 	fclose(write);
 	return 0;
 }
 
+int sumNumbers(int array[], int count_input)
+{
+	int i = count_input - 1;
 
-int sumNumbers(int count_input, FILE *write, int *numbers ) {
-	int count = count_input - 1;
-
-	if (count == 0) {
-		fprintf(write, "[%03d] %d\n", count + 1, numbers[count]);
-		return numbers[count];
-	}
-	else {
-		fprintf(write, "[%03d] %d\n", count + 1, numbers[count] + sumNumbers(count - 1, write, numbers));
-		return numbers[count] + sumNumbers(--count, write, numbers);
+	if (i == 11)
+	{
+		return array[11];
 	}
 
+	return sumNumbers(array, i + 1) + array[i];
+}
+
+int sumarray(int array[], int i)
+{
+	if (i <= 0)
+	{
+		return 0;
+	}
+
+	return sumarray(array, i - 1) + array[i - 1];
 }
