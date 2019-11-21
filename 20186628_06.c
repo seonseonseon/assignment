@@ -7,6 +7,8 @@
 //with recursion
 //첫번째 자리에 올 수 있는거 n개 두번째 자리에 올 수 있는거 n-1개 ...
 
+void permutation(char* array, int depth, int num, FILE* write);
+void swap(char* array, int i, int j);
 
 int main(int argc, char* argv[]) {
 	//file
@@ -42,8 +44,9 @@ int main(int argc, char* argv[]) {
 	}
 	
 	//calculate n factorial that is P(n,n)
-	int count = factorial(num);
+	//int count = factorial(num);
 
+	/*
 	// make array to store string of permutation
 	// it means char array[count][num];
 	char **array;
@@ -51,22 +54,18 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < count; i++) {
 		array[i] = (int*)malloc(sizeof(int) * num);
 	}
-	
+	*/
+
+
+
 	// call permutation function
 	//permutation(array, remain, count);
-	//char remain[6] = 
-
-
-
-	//print result
-	int index = 0;
-	printf("[%03d]", index);
-	//fprintf
+	permutation(characters, 0, num, write);
 
 	//print name and student id
 	printf("permutation of characters\n");
 	printf("20186628 임선호\n");
-	fprintf(write, "This program is permutation of characters and written by 임선호 at 2019 11 15 \n");
+	fprintf(write, "This program is permutation of six characters and written by 임선호 at 2019 11 15 ~ 2019 11 21 \n");
 	fprintf(write, "Student Id Number is 20186628\n");
 
 	//close
@@ -76,6 +75,7 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 //count에 n이 들어오니까
+/*
 void permutation(char** array, char* remain, int count) {	//remain은 아직 사용하지 않은 character를 저장하는 용도
 	for (int i = 0; i < count; i++) {
 		for (int j = 0; j < factorial(count - 1); i++) {
@@ -86,8 +86,8 @@ void permutation(char** array, char* remain, int count) {	//remain은 아직 사용하
 	//remain을 줄이고
 	permutation(array, remain, count - 1);
 
-}
-
+}*/
+/*
 int factorial(int input) {	//input >= 1
 	if (input == 1) {
 		return 1;
@@ -95,4 +95,37 @@ int factorial(int input) {	//input >= 1
 	else {
 		return factorial(input - 1) * input;
 	}
+}*/
+
+
+void permutation(char* array, int depth, int num, FILE* write) {
+	static int count = 1;
+	if (depth == num) {
+		//print
+		printf("[%03d] ", count);
+		fprintf(write, "[%03d] ", count);
+		count++;
+		for (int i = 0; i < num; i++) {
+			printf("%c ", array[i]);
+			fprintf(write, "%c ", array[i]);
+		}
+		printf("\n");
+		fprintf(write, "\n");
+		return;
+	}
+
+	for (int i = depth; i < num; i++) {
+		swap(array, i, depth);
+		permutation(array, depth + 1, num, write);
+		swap(array, i, depth);
+	}
+
+}
+
+
+void swap(char* array, int i, int j) {
+	char temp = array[i];
+	array[i] = array[j];
+	array[j] = temp;
+	return;
 }
