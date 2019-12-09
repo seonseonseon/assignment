@@ -4,25 +4,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//binary search tree
-typedef struct nodeStruct
+typedef struct node
 {
+	int tag; //
 	char* value;
 	int count;
-	struct NodeStruct* leftChild;
-	struct NodeStruct* rightChild;
-}Node;
-
-Node* root = NULL;
+}node;
 
 char* casedown(char* input);
-Node* insert(Node* root, char* value);
-Node* search(Node* root, char* value);
-void printAll(Node* root);
+void search_insert(char* target);
+void printAll();
 
 // argv[0] input.txt
 // argv[1] output.txt
+
+node nodes[1200000]; //1116092개 정도의 토큰이 있는듯
 int main(int argc, char* argv[]) {
+	nodes[0].tag = NULL;
+
 	//file
 	FILE *read, *write;
 	fopen_s(&read, argv[1], "r");
@@ -41,9 +40,9 @@ int main(int argc, char* argv[]) {
 	//input file read
 	char str[1000];	//평균 한 라인에 200자가 넘지 않는 걸로 보임...
 	int toknum = 0;
-	char* temp[100000]; //1116092개 정도의 토큰이 있는 듯
-	const char delimiters[] = ", !.?\'\"#*-_=[]():\n~^{}><@/&$%`;|\\";	//'s 를 포함할까
-	//fgets(str, sizeof(str), read);
+	
+	const char delimiters[] = ", !.?\'\"#*-_=[]():~^{}><@/&$%`;|\\\n";	//'s 를 포함할까
+	
 	while(fgets(str, sizeof(str), read) != NULL){
 		char *token = strtok(str, delimiters);
 
@@ -52,16 +51,20 @@ int main(int argc, char* argv[]) {
 			//대소문자 변경
 			token = casedown(token);
 
-			printf("%d: [%s]\n", ++toknum, token); //
+			printf("[%07d] %s\n", ++toknum, token); //
 
-			//이미 있는지 체크하여 token을 저장하거나 count++
-			Node* tempNode = search(root, token);
-			if (tempNode == NULL) {
-				insert(root, token);
-			}
-			else {
-				tempNode->count++;
-			}
+			//이미 있는지 체크하여 token을 저장하거나 count++하는 함수
+			//int i = 0;
+			search_insert(token);
+			/*
+			if (tempnode.tag == NULL) {
+				nodes[i].value = token;
+				nodes[i].count = 1;
+				nodes[i].tag = 1;
+				nodes[i + 1].tag = NULL;
+				i++;
+			}*/
+			
 
 			//token을 저장 
 			//temp[toknum] = token;
@@ -77,13 +80,8 @@ int main(int argc, char* argv[]) {
 
 
 	//output file write
-	//static int count = 0;
-	//printf("[%03d] ", count);
-	//fprintf(write, "[%03d] ", count);
-	//count++;
-
-	printAll(root);
-
+	printAll();
+	printf("\n");
 	fprintf(write, "\n");
 
 	//print name and student id
@@ -116,58 +114,39 @@ char* casedown(char* input) {
 //s1 < s2 음수 사전순 s1 다음 s2
 //s1 > s2 양수 사전순 s2 다음 s1
 
-Node* insert(Node* root, char* value)
-{
-	if (root == NULL)
-	{
-		root = (Node*)malloc(sizeof(Node));
-		root->leftChild = root->rightChild = NULL;
-		root->value = value;
-		root->count = 0;
-		return root;
-	}
-	else
-	{
-		if (strcmp(root->value, value) > 0) //
-			root->leftChild = insert(root->leftChild, value);
-
-		else
-			root->rightChild = insert(root->rightChild, value);
-	}
 
 
-	return root;
-}
-
-
-
-
-
-Node* search(Node* root, char* value)
-{
-	if (root == NULL)
-		return NULL;
-
-	if (strcmp(root->value, value) == 0) //
-		return root;
-	else if (strcmp(root->value, value) > 0) //
-		return search(root->leftChild, value);
-	else
-		return search(root->rightChild, value);
-}
 //Null 나오면 새로 insert
 //search 하여 나온 노드 count++;
+void search_insert(char* target) {
+	int i = 0;
+	while (nodes[i].tag != NULL) {
+		if (strcmp(nodes[i].value, target) == 0) {
+			nodes[i].count++;
+			return;
+		}
 
+		i++;
+	}
+	nodes[i].value = target;
+	nodes[i].count = 1;
+	nodes[i].tag = 1;
+	nodes[i + 1].tag = NULL;
 
-void printAll(Node* root)
+	return;
+}
+
+void printAll()
 {
-	if (root == NULL)
+	if (nodes[0].tag == NULL)
 		return;
-
-	printf("%s  (%d)\n", root->value, root->count);
-	fprintf("%s  (%d)\n", root->value, root->count);
-	printAll(root->leftChild);
-	printAll(root->rightChild);
+	int i = 0;
+	while (nodes[i].tag != NULL) {
+		printf("[%07d]%s  (%d)\n",i, nodes[i].value, nodes[i].count); //
+		fprintf("[%07d]%s  (%d)\n",i, nodes[i].value, nodes[i].count);
+		i++;
+	}
+	return;
 }
 
 /*
