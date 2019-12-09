@@ -71,8 +71,15 @@ int main(int argc, char* argv[]) {
 
 	//output file write
 	printAll(write); //
-	printf("\n");
-	fprintf(write, "\n");
+	int total = 0;
+	int i = 0;
+	while (nodes[i].tag != 0) {
+		total = total + nodes[i].count;
+		i++;
+	}
+
+	printf("[total] %07d\n", total);
+	fprintf(write, "[total] %07d\n", total);
 
 	//print name and student id
 	printf("building a dictionary of words\n");
